@@ -3,7 +3,7 @@
 ; 2- alink fichero.obj -oEXE
 	
 segment DATOS
-	msg                DB 'HASTA LUEGO LUCAS!$'
+	msg                DB 'TORPEDORR!$'
 
 	num_a 			   DW 1     ; num_a
 	num_b 			   DW 1     ; num_b
@@ -105,7 +105,7 @@ CREATE_NUMBER:
 	MOV AX,[nextCociente]  	    ; PONEMOS DE NUEVO AX con el valor del cociente actual
 	CMP AX,0 					; ¿ ya el cociente es 0 ?
 	JNE CREATE_NUMBER      		; ¿ no ? sigue dividiendo
-	;JE PROCESO_IMPRIMIR_NUMERO  ; ¿ si ? pues vamos a sacar los numeros
+	JE PROCESO_IMPRIMIR_NUMERO  ; ¿ si ? pues vamos a mostrar el numero en pantalla
 	JE FIN
 	
 	
@@ -115,62 +115,64 @@ CREATE_NUMBER:
 	POP BX
 	POP AX
 	
-RET
-	
-	
-	
-	
-	
+RET   ; END CREATE NUMBER
 	
 	
 
-; PROCESO_IMPRIMIR_NUMERO:
+PROCESO_IMPRIMIR_NUMERO:
 
-	; XOR CX,CX				    ; Ponemos CX a 0
-	; MOV CX,[contador] 			; ponemos el contador de CX con el total de iteraciones de division
-								; ; ya que la instruccion LOOP necesita que CX tenga el numero de iteraciones
+	PUSH AX
+	PUSH BX
+	PUSH CX
+	PUSH DX
 
-; SACA_RESTO: 					; GUARDAR DIGITO ASCII EN variable CADENA
+	XOR CX,CX				    ; Ponemos CX a 0
+	MOV CX,[contador] 			; ponemos el contador de CX con el total de iteraciones de division
+								; ya que la instruccion LOOP necesita que CX tenga el numero de iteraciones
+
+SACA_RESTO: 					; GUARDAR DIGITO ASCII EN variable CADENA
 
 
 	
-	; XOR AX,AX       		    ; ponemos AX a cero
-	; MOV AX,DATOS    		    ; guardamos los restos en la variable cadena para luego imprimirla
-	; MOV DS,AX       		    ; Nos situamos en el segmento de datos
-	; POP DX					    ; Sacamos 1 valor de la pila y lo guardamos DX , aquí estan los numeros
-							    ; ; apilados de detras a delante 68322 (22386)
+	XOR AX,AX       		    ; ponemos AX a cero
+	MOV AX,DATOS    		    ; guardamos los restos en la variable cadena para luego imprimirla
+	MOV DS,AX       		    ; Nos situamos en el segmento de datos
+	POP DX					    ; Sacamos 1 valor de la pila y lo guardamos DX , aquí estan los numeros
+							    ; apilados de detras a delante 68322 (22386)
 
-	; ADD DX,'0'      		    ; DX contiene el numero guardado pero necesitamos pasarlos a codigo ASCII
-							    ; ; para ello sumamos el 0 (48 en decimal) y obtenemos el digito ASCII que equivale
-							    ; ; a ese NUMERO
+	ADD DX,'0'      		    ; DX contiene el numero guardado pero necesitamos pasarlos a codigo ASCII
+							    ; para ello sumamos el 0 (48 en decimal) y obtenemos el digito ASCII que equivale
+							    ; a ese NUMERO
 							
-	; MOV BX,[contadorParaCadena] ; ponemos en BX el contador para cadena ( estará a 0 ). Es donde almacenaremos los 
-							    ; ; numeros para luego pasar su segmento y desplazamiento a la funcion 9h int 21 
-								; ; (imprimir cadena).
+	MOV BX,[contadorParaCadena] ; ponemos en BX el contador para cadena ( estará a 0 ). Es donde almacenaremos los 
+							    ; numeros para luego pasar su segmento y desplazamiento a la funcion 9h int 21 
+								; (imprimir cadena).
 	
-	; MOV [cadena + BX],DX 	    ; Una vez situados en el segmento de DATOS accedemos a la variable cadena 
-								; ;( espacio de bytes) donde iremos poniendo nuestros numeros para luego verlos.
-                                ; ; Iremos avanzando posicion a posicion con BX. [0][1][2][3] ... y poniendo
-								; ; el resultado de la suma de DX + '0'.
+	MOV [cadena + BX],DX 	    ; Una vez situados en el segmento de DATOS accedemos a la variable cadena 
+								;( espacio de bytes) donde iremos poniendo nuestros numeros para luego verlos.
+                                ; Iremos avanzando posicion a posicion con BX. [0][1][2][3] ... y poniendo
+								; el resultado de la suma de DX + '0'.
 
 	
-	; INC BX                      ; incrementamos BX para que en la siguiente vuelta sea +1
-	; MOV [contadorParaCadena],BX ; guardamos en el contador su numero valor incrementado +1
-	; LOOP SACA_RESTO
+	INC BX                      ; incrementamos BX para que en la siguiente vuelta sea +1
+	MOV [contadorParaCadena],BX ; guardamos en el contador su numero valor incrementado +1
+	LOOP SACA_RESTO
 
 	
-	; INC BX                      ; le sumo 1 más para añadir el caracter $ que indica fin de cadena 
-	; MOV AL,'$'                  ; añadimos el $ al final de la CADENA ,uso AL para guardar el caracter $
-	; MOV [cadena + BX],AL 	    ; GUARDAMOS EL VALOR $ en el final de la cadena.
+	INC BX                      ; le sumo 1 más para añadir el caracter $ que indica fin de cadena 
+	MOV AL,'$'                  ; añadimos el $ al final de la CADENA ,uso AL para guardar el caracter $
+	MOV [cadena + BX],AL 	    ; GUARDAMOS EL VALOR $ en el final de la cadena.
+	
+	POP DX
+	POP CX
+	POP BX
+	POP AX
 
-	; RET
+	RET
+
 ;CALL PRINT_NUMBER               ; imprimimos ya el numero
 ;CALL FIN				        ; terminamos la ejecucion del programa
 
-	
-
-	
-	
 ; PRINT_NUMBER:
 	
 	
