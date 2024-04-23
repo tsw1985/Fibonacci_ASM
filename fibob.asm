@@ -3,6 +3,7 @@
 ; 2- alink fichero.obj -oEXE
 	
 segment DATOS
+	msg                DB 'MOSTRANDO NUMERO$'
 
 	num_a 			   DW 1     ; num_a
 	num_b 			   DW 1     ; num_b
@@ -17,7 +18,7 @@ segment DATOS
 	resto              DW 0      ; guardaremos el resto de cada division aqui
 	contadorParaCadena DW 0      ; lo usaremos para desplazarnos byte a byte en  
 	;nextCociente       DW 44267  ; NUMERO A VISUALIZAR EN PANTALLA
-	nextCociente       DW 0  ; NUMERO A VISUALIZAR EN PANTALLA
+	nextCociente       DW   ; NUMERO A VISUALIZAR EN PANTALLA
 
 segment PILA stack
 		resb 256
@@ -29,76 +30,16 @@ segment CODIGO
 ..start:
 ; ----- START FIBO LOOP
 
-	XOR CX,CX
-	MOV CX,5 ; 10 iteraciones fibonacci
-	XOR AX,AX
-	MOV [nextCociente],AX
-	
-	
-	MOV AX,1
-	MOV [num_a],AX    ; ponemos numero a
-	XOR BX,BX
-	MOV BX,1
-	MOV [num_b],BX    ; ponemos numero b
+XOR AX,AX        ; ponemos AX a 0
+MOV AX,DATOS     ; ponemos en AX con el segmento de datos
+MOV DS,AX        ; seteamos donde está el segmento de datos
+MOV AX,3191      ; ponemos valor
+MOV [nextCociente],AX  ; metemos en next cociente el valor que hay en AX
 
-	
-suma_fibo:
-
-	; int a = 1;
-	; int b = 1;
-	; int c = 0;
-	; System.out.println(a);
-	; for(int i = 0 ; i < 20 ; i++) {
-		; c = a + b;
-		; System.out.println(c);
-		; a = b;
-		; b = c;
-	; }
-
-	XOR AX,AX
-	MOV AX,[num_a]    ; ponemos numero a
-	MOV BX,[num_b]    ; ponemos numero b
-	ADD AX,BX         ; sumamos a+b
-	
-	PUSH AX           ; guardamos AX en pila para luego visualizar numero
-	
-	MOV [num_c],AX    ; c = a + b . ponemos en num_c el total de la suma
-	MOV AX,[num_b]    ; ponemos en AX el valor de B
-	
-	MOV[num_a],AX     ; a=b ponemos el valor de BX
-	MOV AX,[num_c]    ; metemos en AX valor de C
-	
-	MOV [num_b],AX;   ; b = c
-	
-	POP AX            ; sacamos AX en pila que tiene el numero para sumar 
-					  ; para luego visualizar numero
-					  
-	DEC CX            ; incrementamos contador para seguir dando iteraciones hasta 10
-	CMP CX,0
-	MOV [nextCociente],AX       ; ponemos en AX el numero que queremos dividir para empezar las iteraciones de division.
-	JE FIN
-	
-	
-	PUSH CX
-	CALL MUESTRA_NUMERO
-	POP CX
-	
-	
-	JNE suma_fibo
-					  
-    
+XOR CX,CX 					; inicia CX a 0
+CALL GET_NUMBER;
 
 
-CALL FIN ; fin programa
-
-
-
-
-MUESTRA_NUMERO:
-
-	
-
-	MOV CX,0 					; inicia CX a 0
 
 GET_NUMBER:
 
@@ -169,7 +110,8 @@ LOOP SACA_RESTO
 	MOV [cadena + BX],AL 	    ; GUARDAMOS EL VALOR $ en el final de la cadena.
 
 CALL PRINT_NUMBER               ; imprimimos ya el numero
-
+CALL FIN				        ; terminamos la ejecucion del programa
+	
 
 	
 	
@@ -191,38 +133,7 @@ PRINT_NUMBER:
 	POP BX                      ; hace esto en las funciones según Peter Norton.
 	POP AX
 	RET						    ; cuando terminemos, pues retornamos
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	
 FIN:                            ; fin programa
 	MOV AH,4Ch                  ; Servicio DOS para finalizar un programa 
 	INT 21h						; lanzamos la int 21h para ejecutarlo.
-	
