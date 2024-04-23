@@ -3,7 +3,7 @@
 ; 2- alink fichero.obj -oEXE
 	
 segment DATOS
-	msg                DB 'TORPEDORR!$'
+	msg                DB 'ADIOSSS!$'
 
 	num_a 			   DW 1     ; num_a
 	num_b 			   DW 1     ; num_b
@@ -62,6 +62,9 @@ fibo:
 	JNE fibo
 	XOR CX,CX
 	CALL CREATE_NUMBER ; llamamos a create number . Formará el número desde la PILA
+	
+	CALL PRINT_NUMBER  ; imprimimos ya el numero
+	
 	CALL FIN           ; fin programa
 
 
@@ -171,20 +174,28 @@ SACA_RESTO: 					; GUARDAR DIGITO ASCII EN variable CADENA
 	RET
 
 ;CALL PRINT_NUMBER               ; imprimimos ya el numero
-;CALL FIN				        ; terminamos la ejecucion del programa
 
-; PRINT_NUMBER:
-	
-	
-	; MOV AX,DATOS 
-	; MOV DS,AX       		    ; METEMOS EN DS EL SEGMENTO DE LA VARAIBLE cadena
-	; LEA DX,[cadena]             ; METEMOS EN DX EL OFFSET DE cadena
-	; MOV AH,09h                  ; INVOCAMOS AL SERVICIO DE IMPRIMIR CADENA EN PANTALLA
-	; INT 21h                     ; EJECUTAMOS RUTINA DE IMPRIMIR
 
+PRINT_NUMBER:
+	
+	PUSH AX
+	PUSH BX
+	PUSH CX
+	PUSH DX
 	
 	
-	; RET						    ; cuando terminemos, pues retornamos
+	MOV AX,DATOS 
+	MOV DS,AX       		    ; METEMOS EN DS EL SEGMENTO DE LA VARAIBLE cadena
+	LEA DX,[cadena]             ; METEMOS EN DX EL OFFSET DE cadena
+	MOV AH,09h                  ; INVOCAMOS AL SERVICIO DE IMPRIMIR CADENA EN PANTALLA
+	INT 21h                     ; EJECUTAMOS RUTINA DE IMPRIMIR
+	
+	POP DX
+	POP CX
+	POP BX
+	POP AX
+	
+	RET						    ; cuando terminemos, pues retornamos
 	
 FIN:                            ; fin programa
 
