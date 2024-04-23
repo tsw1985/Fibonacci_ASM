@@ -28,7 +28,16 @@ segment CODIGO
 ..start:
 ; ----- START FIBO LOOP
 
-MOV CX,10 ; 10 iteraciones fibonacci
+	XOR CX,CX
+	MOV CX,10 ; 10 iteraciones fibonacci
+	XOR AX,AX
+	MOV AX,1
+	MOV [num_a],AX    ; ponemos numero a
+	XOR BX,BX
+	MOV BX,1
+	MOV [num_b],BX    ; ponemos numero b
+
+	
 suma_fibo:
 
 	; int a = 1;
@@ -42,7 +51,7 @@ suma_fibo:
 		; b = c;
 	; }
 
-
+	XOR AX,AX
 	MOV AX,[num_a]    ; ponemos numero a
 	MOV BX,[num_b]    ; ponemos numero b
 	ADD AX,BX         ; sumamos a+b
@@ -51,24 +60,30 @@ suma_fibo:
 	
 	MOV [num_c],AX    ; c = a + b . ponemos en num_c el total de la suma
 	MOV AX,[num_b]    ; ponemos en AX el valor de B
+	
 	MOV[num_a],AX     ; a=b ponemos el valor de BX
 	MOV AX,[num_c]    ; metemos en AX valor de C
+	
 	MOV [num_b],AX;   ; b = c
 	
 	POP AX            ; sacamos AX en pila que tiene el numero para sumar 
 					  ; para luego visualizar numero
+					  
+	DEC CX            ; incrementamos contador para seguir dando iteraciones hasta 10
+	CMP CX,0
+	MOV AX,[nextCociente]       ; ponemos en AX el numero que queremos dividir para empezar las iteraciones de division.
+	JE FIN
+	JNE suma_fibo
+					  
+    
+	;CALL MUESTRA_NUMERO
+
+
+
+
+CALL FIN
 	
-	
-
-
-	;CALL VER_EN_PANTALLA
-
-LOOP suma_fibo
-
-
- ;------------------ END FIBO LOOP ------
- 
- 
+FIN:                            ; fin programa
 	MOV AH,4Ch                  ; Servicio DOS para finalizar un programa 
 	INT 21h						; lanzamos la int 21h para ejecutarlo.
 	
