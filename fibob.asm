@@ -31,7 +31,7 @@ segment CODIGO
 ; ----- START FIBO LOOP
 
 XOR CX,CX
-MOV CX,1
+MOV CX,3
 
 fibo:
 	XOR AX,AX        ; ponemos AX a 0
@@ -60,23 +60,26 @@ fibo:
 	DEC CX            ; incrementamos contador para seguir dando iteraciones hasta 10
 	CMP CX,0
 	JNE fibo
-	XOR CX,CX
-	CALL CREATE_NUMBER ; llamamos a create number . Formará el número desde la PILA
 	
-	CALL PRINT_NUMBER  ; imprimimos ya el numero
+	
+	CALL CREATE_NUMBER_BY_DIVISIONS                   ; llamamos a create number . Formará el número desde la PILA
+	
+	;CALL GET_NUMBER_FROM_STACK_AND_PUT_IN_ON_VARIABLE ; sacamos numero de la pila y lo guardamos en la variable
+	
+	;CALL PRINT_NUMBER  ; imprimimos ya el numero
 	
 	CALL FIN           ; fin programa
 
 
 
 ;---------------------------------------- PRINT NUMBER ----------------------------
-CREATE_NUMBER:
+CREATE_NUMBER_BY_DIVISIONS:
 
 	PUSH AX
 	PUSH BX
 	PUSH CX
 	PUSH DX
-	; END PUSH
+	;END PUSH
 	
 	
 	XOR AX,AX                   ; ponemos AX a 0
@@ -107,36 +110,29 @@ CREATE_NUMBER:
 	; COMPROBACIONES
 	MOV AX,[nextCociente]  	    ; PONEMOS DE NUEVO AX con el valor del cociente actual
 	CMP AX,0 					; ¿ ya el cociente es 0 ?
-	JNE CREATE_NUMBER      		; ¿ no ? sigue dividiendo
-	JE PROCESO_IMPRIMIR_NUMERO  ; ¿ si ? pues vamos a mostrar el numero en pantalla
-	JE FIN
+	JNE CREATE_NUMBER_BY_DIVISIONS     		; ¿ no ? sigue dividiendo
 	
-	
-	; INIT POP
 	POP DX
 	POP CX
 	POP BX
 	POP AX
 	
-RET   ; END CREATE NUMBER
+	RET ; END CREATE NUMBER
 	
 	
 
-PROCESO_IMPRIMIR_NUMERO:
+GET_NUMBER_FROM_STACK_AND_PUT_IN_ON_VARIABLE
 
-	PUSH AX
-	PUSH BX
-	PUSH CX
-	PUSH DX
+	;PUSH AX
+	;PUSH BX
+	;PUSH CX
+	;PUSH DX
 
 	XOR CX,CX				    ; Ponemos CX a 0
 	MOV CX,[contador] 			; ponemos el contador de CX con el total de iteraciones de division
 								; ya que la instruccion LOOP necesita que CX tenga el numero de iteraciones
 
-SACA_RESTO: 					; GUARDAR DIGITO ASCII EN variable CADENA
-
-
-	
+	SACA_RESTO: 				; GUARDAR DIGITO ASCII EN variable CADENA
 	XOR AX,AX       		    ; ponemos AX a cero
 	MOV AX,DATOS    		    ; guardamos los restos en la variable cadena para luego imprimirla
 	MOV DS,AX       		    ; Nos situamos en el segmento de datos
@@ -166,12 +162,12 @@ SACA_RESTO: 					; GUARDAR DIGITO ASCII EN variable CADENA
 	MOV AL,'$'                  ; añadimos el $ al final de la CADENA ,uso AL para guardar el caracter $
 	MOV [cadena + BX],AL 	    ; GUARDAMOS EL VALOR $ en el final de la cadena.
 	
-	POP DX
-	POP CX
-	POP BX
-	POP AX
+	;POP DX
+	;POP CX
+	;POP BX
+	;POP AX
 
-	RET
+RET
 
 ;CALL PRINT_NUMBER               ; imprimimos ya el numero
 
