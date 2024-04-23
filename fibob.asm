@@ -3,7 +3,7 @@
 ; 2- alink fichero.obj -oEXE
 	
 segment DATOS
-	msg                DB 'TEST MENSAJE$'
+	msg                DB 'HASTA LUEGO LUCAS!$'
 
 	num_a 			   DW 1     ; num_a
 	num_b 			   DW 1     ; num_b
@@ -61,66 +61,63 @@ fibo:
 	CMP CX,0
 	JNE fibo
 	XOR CX,CX
-	CALL CREATE_NUMBER
+	CALL CREATE_NUMBER ; llamamos a create number . Formará el número desde la PILA
+	CALL FIN           ; fin programa
 
 
 
-	CALL FIN
-
-
-
-;---------- PRINT NUMBER ---------------
+;---------------------------------------- PRINT NUMBER ----------------------------
 CREATE_NUMBER:
 
 	PUSH AX
 	PUSH BX
 	PUSH CX
 	PUSH DX
+	; END PUSH
+	
+	
+	XOR AX,AX                   ; ponemos AX a 0
+	MOV AX,DATOS                ; queremos situarnos en el segmento de datos ( donde están las variables/espacios de memoria)
+	MOV DS,AX                   ; ponemos DS con AX
+	
+	POP AX;                     ; sacamos el numero guardado arriba de la pila para ponerlo en AX
+	MOV AX,[nextCociente]       ; ponemos en AX el numero que queremos dividir para empezar las iteraciones de division.
+	
+	; DIVISION
+	MOV BX,10   				; Dividimos el numero que hay en 'nextCociente' / 10
+	XOR DX,DX           		; aqui irá el resto
+	DIV BX              		; ejecutamos la division . La instrucción DIV que 
+								; guardará en AX el cociente y el resto en DX.
+								
+	MOV [nextCociente], AX		; segun dividimos metemos en nextCociente el cociente
+	
+	PUSH DX             		; guardamos resto en PILA que está en DX
+	MOV [resto],DX      		; y tambien lo guardamos en la variable RESTO
+	; FIN DIVISION
 
-	MOV AX,DATOS 
-	MOV DS,AX       		    ; METEMOS EN DS EL SEGMENTO DE LA VARAIBLE cadena
-	LEA DX,[msg]             ; METEMOS EN DX EL OFFSET DE cadena
-	MOV AH,09h                  ; INVOCAMOS AL SERVICIO DE IMPRIMIR CADENA EN PANTALLA
-	INT 21h                     ; EJECUTAMOS RUTINA DE IMPRIMIR
+	; CONTADORES
+	MOV CX,[contador]   		; ponemos el valor de contador en CX
+	INC CX              		; incrementamos CX para ir guardando cuantos numeros van
+	MOV [contador],CX     		; guardo en contador las iteraciones
+	; FIN CONTADORES
+
+	; COMPROBACIONES
+	MOV AX,[nextCociente]  	    ; PONEMOS DE NUEVO AX con el valor del cociente actual
+	CMP AX,0 					; ¿ ya el cociente es 0 ?
+	JNE CREATE_NUMBER      		; ¿ no ? sigue dividiendo
+	;JE PROCESO_IMPRIMIR_NUMERO  ; ¿ si ? pues vamos a sacar los numeros
+	JE FIN
 	
 	
+	; INIT POP
 	POP DX
 	POP CX
 	POP BX
 	POP AX
 	
-	RET
+RET
 	
-	; XOR AX,AX                   ; ponemos AX a 0
-	; MOV AX,DATOS                ; queremos situarnos en el segmento de datos ( donde están las variables/espacios de memoria)
-	; MOV DS,AX                   ; ponemos DS con AX
 	
-	; POP AX;                     ; sacamos el numero guardado arriba de la pila para ponerlo en AX
-	; MOV AX,[nextCociente]       ; ponemos en AX el numero que queremos dividir para empezar las iteraciones de division.
-	
-	; ; DIVISION
-	; MOV BX,10   				; Dividimos el numero que hay en 'nextCociente' / 10
-	; XOR DX,DX           		; aqui irá el resto
-	; DIV BX              		; ejecutamos la division . La instrucción DIV que 
-								; ; guardará en AX el cociente y el resto en DX.
-								
-	; MOV [nextCociente], AX		; segun dividimos metemos en nextCociente el cociente
-	
-	; PUSH DX             		; guardamos resto en PILA que está en DX
-	; MOV [resto],DX      		; y tambien lo guardamos en la variable RESTO
-	; ; FIN DIVISION
-
-	; ; CONTADORES
-	; MOV CX,[contador]   		; ponemos el valor de contador en CX
-	; INC CX              		; incrementamos CX para ir guardando cuantos numeros van
-	; MOV [contador],CX     		; guardo en contador las iteraciones
-	; ; FIN CONTADORES
-
-	; ; COMPROBACIONES
-	; MOV AX,[nextCociente]  	    ; PONEMOS DE NUEVO AX con el valor del cociente actual
-	; CMP AX,0 					; ¿ ya el cociente es 0 ?
-	; ;JE PROCESO_IMPRIMIR_NUMERO  ; ¿ si ? pues vamos a sacar los numeros
-	; JNE CREATE_NUMBER      		; ¿ no ? sigue dividiendo
 	
 	
 	
@@ -188,5 +185,14 @@ CREATE_NUMBER:
 	; RET						    ; cuando terminemos, pues retornamos
 	
 FIN:                            ; fin programa
+
+	MOV AX,DATOS 
+	MOV DS,AX       		    ; METEMOS EN DS EL SEGMENTO DE LA VARAIBLE cadena
+	LEA DX,[msg]             ; METEMOS EN DX EL OFFSET DE cadena
+	MOV AH,09h                  ; INVOCAMOS AL SERVICIO DE IMPRIMIR CADENA EN PANTALLA
+	INT 21h                     ; EJECUTAMOS RUTINA DE IMPRIMIR	
+
 	MOV AH,4Ch                  ; Servicio DOS para finalizar un programa 
 	INT 21h						; lanzamos la int 21h para ejecutarlo.
+	
+	
