@@ -18,7 +18,7 @@ segment DATOS
 	contador           DW 0      ; guardaremos cuantas iteraciones (divisiones) se hicieron
 	resto              DW 0      ; guardaremos el resto de cada division aqui
 	contadorParaCadena DW 0      ; lo usaremos para desplazarnos byte a byte en  
-	nextCociente       DW 4  ; NUMERO A VISUALIZAR EN PANTALLA
+	nextCociente       DW 44267  ; NUMERO A VISUALIZAR EN PANTALLA
 
 segment PILA stack
 		resb 256

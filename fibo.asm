@@ -27,7 +27,7 @@ segment PILA stack
 segment CODIGO
 
 ..start:
-; ----- START FIBO LOOP
+
 
 	XOR CX,CX
 	MOV CX,5 ; 10 iteraciones fibonacci
