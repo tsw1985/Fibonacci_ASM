@@ -31,9 +31,7 @@ segment CODIGO
 
 ..start:
 
-;MOV CX,0 					; inicia CX a 0
-	
-                 ; ponemos DS con AX
+; ITER 1
 XOR AX,AX                   ; ponemos AX a 0
 MOV AX,DATOS                ; queremos situarnos en el segmento de datos ( donde están las variables/espacios de memoria)
 MOV DS,AX  
@@ -44,18 +42,44 @@ ADD AX,BX
 MOV [nextCociente],AX       ; ponemos en AX el numero que queremos dividir para empezar las iteraciones de division.	
 
 CALL GET_NUMBER
+; END ITER 1
 
 
-; XOR AX,AX                   ; ponemos AX a 0
-; MOV AX,DATOS                ; queremos situarnos en el segmento de datos ( donde están las variables/espacios de memoria)
-; MOV DS,AX  
-; XOR AX,AX                   ; ponemos AX a 0
-; MOV AX,DATOS                ; queremos situarnos en el segmento de datos ( donde están las variables/espacios de memoria)
-; MOV DS,AX                   ; ponemos DS con AX
-; MOV AX,5
-; MOV BX,5
-; ADD AX,BX
-; CALL GET_NUMBER
+; ITER 2
+XOR AX,AX                   ; ponemos AX a 0
+MOV AX,DATOS                ; queremos situarnos en el segmento de datos ( donde están las variables/espacios de memoria)
+MOV DS,AX  
+
+MOV AX,9
+MOV BX,9
+ADD AX,BX
+MOV [nextCociente],AX       ; ponemos en AX el numero que queremos dividir para empezar las iteraciones de division.	
+CALL GET_NUMBER
+; END  ITER 2
+
+; ITER 3
+XOR AX,AX                   ; ponemos AX a 0
+MOV AX,DATOS                ; queremos situarnos en el segmento de datos ( donde están las variables/espacios de memoria)
+MOV DS,AX  
+
+MOV AX,100
+MOV BX,100
+ADD AX,BX
+MOV [nextCociente],AX       ; ponemos en AX el numero que queremos dividir para empezar las iteraciones de division.	
+CALL GET_NUMBER
+; END  ITER 3
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 CALL FIN
