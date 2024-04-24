@@ -14,11 +14,13 @@
 ;***********************************************************************************
 
 segment DATOS
-	cadena             RESB 50   ; espacio que tendrá los digitos del numero  
+	cadena             RESB 100   ; espacio que tendrá los digitos del numero  
 	contador           DW 0      ; guardaremos cuantas iteraciones (divisiones) se hicieron
+	contador_loop      DW 0
 	resto              DW 0      ; guardaremos el resto de cada division aqui
 	contadorParaCadena DW 0      ; lo usaremos para desplazarnos byte a byte en  
-	nextCociente       DW 44267  ; NUMERO A VISUALIZAR EN PANTALLA
+	;nextCociente       DW 44267  ; NUMERO A VISUALIZAR EN PANTALLA
+	nextCociente       DW 0  ; NUMERO A VISUALIZAR EN PANTALLA
 
 segment PILA stack
 		resb 256
@@ -29,20 +31,47 @@ segment CODIGO
 
 ..start:
 
-MOV CX,0 					; inicia CX a 0
+;MOV CX,0 					; inicia CX a 0
 	
+                 ; ponemos DS con AX
 XOR AX,AX                   ; ponemos AX a 0
 MOV AX,DATOS                ; queremos situarnos en el segmento de datos ( donde están las variables/espacios de memoria)
-MOV DS,AX                   ; ponemos DS con AX
-;MOV AX,[nextCociente]       ; ponemos en AX el numero que queremos dividir para empezar las iteraciones de division.	
-MOV AX,20
-MOV BX,30
+MOV DS,AX  
+
+MOV AX,3
+MOV BX,3
 ADD AX,BX
+MOV [nextCociente],AX       ; ponemos en AX el numero que queremos dividir para empezar las iteraciones de division.	
+
+CALL GET_NUMBER
+
+
+; XOR AX,AX                   ; ponemos AX a 0
+; MOV AX,DATOS                ; queremos situarnos en el segmento de datos ( donde están las variables/espacios de memoria)
+; MOV DS,AX  
+; XOR AX,AX                   ; ponemos AX a 0
+; MOV AX,DATOS                ; queremos situarnos en el segmento de datos ( donde están las variables/espacios de memoria)
+; MOV DS,AX                   ; ponemos DS con AX
+; MOV AX,5
+; MOV BX,5
+; ADD AX,BX
+; CALL GET_NUMBER
+
+
+CALL FIN
 
 GET_NUMBER:
 
+	XOR CX,CX 					; inicia CX a 0
+
+
+CONTINUE_DIV:	
+	XOR AX,AX                   ; ponemos AX a 0
+	MOV AX,DATOS                ; queremos situarnos en el segmento de datos ( donde están las variables/espacios de memoria)
+	MOV DS,AX  
 	
-	
+	MOV AX,[nextCociente]
+
 	; DIVISION
 	MOV BX,10   				; Dividimos el numero que hay en 'nextCociente' / 10
 	XOR DX,DX           		; aqui irá el resto
@@ -52,7 +81,6 @@ GET_NUMBER:
 	MOV [nextCociente], AX		; segun dividimos metemos en nextCociente el cociente
 	
 	PUSH DX             		; guardamos resto en PILA que está en DX
-	MOV [resto],DX      		; y tambien lo guardamos en la variable RESTO
 	; FIN DIVISION
 
 	; CONTADORES
@@ -65,7 +93,7 @@ GET_NUMBER:
 	MOV AX,[nextCociente]  	    ; PONEMOS DE NUEVO AX con el valor del cociente actual
 	CMP AX,0 					; ¿ ya el cociente es 0 ?
 	JE PROCESO_IMPRIMIR_NUMERO  ; ¿ si ? pues vamos a sacar los numeros
-	JNE GET_NUMBER      		; ¿ no ? sigue dividiendo
+	JNE CONTINUE_DIV      		; ¿ no ? sigue dividiendo
 
 PROCESO_IMPRIMIR_NUMERO:
 
@@ -80,7 +108,7 @@ SACA_RESTO: 					; GUARDAR DIGITO ASCII EN variable CADENA
 	MOV DS,AX       		    ; Nos situamos en el segmento de datos
 	POP DX					    ; Sacamos 1 valor de la pila y lo guardamos DX , aquí estan los numeros
 							    ; apilados de detras a delante 68322 (22386)
-
+								
 	ADD DX,'0'      		    ; DX contiene el numero guardado pero necesitamos pasarlos a codigo ASCII
 							    ; para ello sumamos el 0 (48 en decimal) y obtenemos el digito ASCII que equivale
 							    ; a ese NUMERO
@@ -97,36 +125,27 @@ SACA_RESTO: 					; GUARDAR DIGITO ASCII EN variable CADENA
 	
 	INC BX                      ; incrementamos BX para que en la siguiente vuelta sea +1
 	MOV [contadorParaCadena],BX ; guardamos en el contador su numero valor incrementado +1
-LOOP SACA_RESTO
+	MOV BX,[contadorParaCadena]
+	MOV AX,[contador]
+	CMP AX,BX
+	JNE SACA_RESTO
+;LOOP SACA_RESTO
 
 	
 	INC BX                      ; le sumo 1 más para añadir el caracter $ que indica fin de cadena 
 	MOV AL,'$'                  ; añadimos el $ al final de la CADENA ,uso AL para guardar el caracter $
 	MOV [cadena + BX],AL 	    ; GUARDAMOS EL VALOR $ en el final de la cadena.
 
-CALL PRINT_NUMBER               ; imprimimos ya el numero
-CALL FIN				        ; terminamos la ejecucion del programa
-	
-
-	
-	
-PRINT_NUMBER:
-	
-	PUSH AX						; Guardamos en la pila los registros usados.
-	PUSH BX
-	PUSH CX
-	PUSH DX
+								; imprimimos ya el numero
+				                ; terminamos la ejecucion del programa
 	
 	MOV AX,DATOS 
 	MOV DS,AX       		    ; METEMOS EN DS EL SEGMENTO DE LA VARAIBLE cadena
 	LEA DX,[cadena]             ; METEMOS EN DX EL OFFSET DE cadena
 	MOV AH,09h                  ; INVOCAMOS AL SERVICIO DE IMPRIMIR CADENA EN PANTALLA
 	INT 21h                     ; EJECUTAMOS RUTINA DE IMPRIMIR
+	
 
-	POP DX						; cuando terminemos de usar nuestras funciones volvemos
-	POP CX                      ; a recuperar los valores de los registros. Es una buena práctica
-	POP BX                      ; hace esto en las funciones según Peter Norton.
-	POP AX
 	RET						    ; cuando terminemos, pues retornamos
 	
 FIN:                            ; fin programa
