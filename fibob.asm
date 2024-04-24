@@ -14,6 +14,7 @@
 ;***********************************************************************************
 
 segment DATOS
+	adios              DB 'Adios y gracias $'
 	cadena             RESB 100   ; espacio que tendrá los digitos del numero  
 	contador           DW 0      ; guardaremos cuantas iteraciones (divisiones) se hicieron
 	contador_loop      DW 0
@@ -69,20 +70,7 @@ MOV [nextCociente],AX       ; ponemos en AX el numero que queremos dividir para 
 CALL GET_NUMBER
 ; END  ITER 3
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-CALL FIN
+CALL FIN ;cerramos programa
 
 GET_NUMBER:
 
@@ -173,5 +161,17 @@ SACA_RESTO: 					; GUARDAR DIGITO ASCII EN variable CADENA
 	RET						    ; cuando terminemos, pues retornamos
 	
 FIN:                            ; fin programa
+
+	MOV AX,DATOS 
+	MOV DS,AX       		    ; METEMOS EN DS EL SEGMENTO DE LA VARAIBLE cadena
+	LEA DX,[cadena]             ; METEMOS EN DX EL OFFSET DE cadena
+	MOV AH,09h                  ; INVOCAMOS AL SERVICIO DE IMPRIMIR CADENA EN PANTALLA
+	INT 21h                     ; EJECUTAMOS RUTINA DE IMPRIMIR
+	
+	LEA DX,[adios]             ; METEMOS EN DX EL OFFSET DE cadena
+	MOV AH,09h                  ; INVOCAMOS AL SERVICIO DE IMPRIMIR CADENA EN PANTALLA
+	INT 21h                     ; EJECUTAMOS RUTINA DE IMPRIMIR
+	
+
 	MOV AH,4Ch                  ; Servicio DOS para finalizar un programa 
 	INT 21h						; lanzamos la int 21h para ejecutarlo.
