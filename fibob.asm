@@ -54,7 +54,7 @@ fibo:
 	; AQUI HAY QUE IMPRIMIR EL NUMERO !!!
 		MOV [nextCociente],AX       ; ponemos en AX el numero que queremos dividir para empezar las iteraciones de division.
 		CALL PRINT_TEST
-		;CALL CREATE_NUMBER_BY_DIVISIONS ; llamamos a create number . Formará el número desde la PILA
+		CALL CREATE_NUMBER_BY_DIVISIONS ; llamamos a create number . Formará el número desde la PILA
 		;CALL PRINT_INTERCAMBIO
 		
 		;CALL PRINT_FIN_CALCULAR_RESTOS ; mostramos restos ya guardamos
@@ -119,7 +119,9 @@ CREATE_NUMBER_BY_DIVISIONS:
 	; FIN DIVISION
 
 	; CONTADORES
-
+	XOR AX,AX                   ; ponemos AX a 0
+	MOV AX,DATOS                ; queremos situarnos en el segmento de datos ( donde están las variables/espacios de memoria)
+	MOV DS,AX                   ; ponemos DS con AX
 	MOV CX,[contador]   		; ponemos el valor de contador en CX
 	INC CX              		; incrementamos CX para ir guardando cuantos numeros van
 	MOV [contador],CX     		; guardo en contador las iteraciones
