@@ -37,18 +37,21 @@ segment CODIGO
 
 ..start:
 
+
+
 ;************************* ITER **************************
 XOR AX,AX                   ; ponemos AX a 0
 MOV AX,DATOS                ; queremos situarnos en el segmento de datos ( donde están las variables/espacios de memoria)
 MOV DS,AX  
 
-
-fibonacci:
 MOV AX,1
 MOV [num_a],AX    ; ponemos numero a
 XOR BX,BX
 MOV BX,1
 MOV [num_b],BX    ; ponemos numero b
+
+
+fibonacci:
 
 ;suma y guarda en el next cociente e inicia proceso de imprimir numero
 	ADD AX,BX ; a + b 
@@ -62,15 +65,31 @@ MOV [num_b],BX    ; ponemos numero b
 
 
 ; intercambio de numeros
+
+
+	; int a = 1;
+	; int b = 1;
+	; int c = 0;
+	; System.out.println(a);
+	; for(int i = 0 ; i < 20 ; i++) {
+		; c = a + b;
+		; System.out.println(c);
+		; a = b;
+		; b = c;
+	; }
+
 	XOR AX,AX                   ; ponemos AX a 0
 	MOV AX,DATOS                ; queremos situarnos en el segmento de datos ( donde están las variables/espacios de memoria)
 	MOV DS,AX
 	XOR AX,AX	
 	MOV AX,[num_b]    ; ponemos en AX el valor de B
 	MOV[num_a],AX     ; a=b ponemos el valor de BX
-	XOR AX,AX
-	MOV AX,[num_c]    ; metemos en AX valor de C
-	MOV [num_b],AX;   ; b = c
+	XOR BX,BX
+	MOV BX,[num_c]    ; metemos en AX valor de C
+	MOV [num_b],BX;   ; b = c
+	
+	
+
 
 	;MOV [nextCociente],AX       ; ponemos en AX el numero que queremos dividir para empezar las iteraciones de division.
 ; fin intercambio de numeros
