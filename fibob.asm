@@ -16,12 +16,17 @@
 segment DATOS
 	adios              DB 'Adios y gracias $'
 	cadena             RESB 20   ; espacio que tendrá los digitos del numero  
+	num_a 			   DW 1     ; num_a
+	num_b 			   DW 1     ; num_b
+	num_c 			   DW 0     ; acumulador
 	contador           DW 0      ; guardaremos cuantas iteraciones (divisiones) se hicieron
-	contador_loop      DW 0
+
+	contador_fibos     DW 0      ; contador para controlar cuantas vueltas llevamos
+	total_fibos        DW 5      ; total de vueltas fibonaccis que queremos hacers
+	
 	resto              DW 0      ; guardaremos el resto de cada division aqui
 	contadorParaCadena DW 0      ; lo usaremos para desplazarnos byte a byte en  
-	;nextCociente       DW 44267  ; NUMERO A VISUALIZAR EN PANTALLA
-	nextCociente       DW 0  ; NUMERO A VISUALIZAR EN PANTALLA
+	nextCociente       DW 0      ; NUMERO A VISUALIZAR EN PANTALLA
 
 segment PILA stack
 		resb 256
@@ -32,59 +37,64 @@ segment CODIGO
 
 ..start:
 
-; ITER 1
+;************************* ITER **************************
 XOR AX,AX                   ; ponemos AX a 0
 MOV AX,DATOS                ; queremos situarnos en el segmento de datos ( donde están las variables/espacios de memoria)
 MOV DS,AX  
 
-MOV AX,3
-MOV BX,3
-ADD AX,BX
-MOV [nextCociente],AX       ; ponemos en AX el numero que queremos dividir para empezar las iteraciones de division.	
-CALL GET_NUMBER
-XOR AX,AX
-MOV [contador],AX
-MOV [contadorParaCadena],AX
-; END ITER 1
+
+fibonacci:
+MOV AX,1
+MOV [num_a],AX    ; ponemos numero a
+XOR BX,BX
+MOV BX,1
+MOV [num_b],BX    ; ponemos numero b
+
+;suma y guarda en el next cociente e inicia proceso de imprimir numero
+	ADD AX,BX ; a + b 
+	MOV [nextCociente],AX       ; ponemos en AX el numero que queremos dividir para empezar las iteraciones de division.	
+	MOV [num_c],AX    ; c = a + b . ponemos en num_c el total de la suma que está guardado en AX
+	CALL GET_NUMBER
+	XOR AX,AX          ; ponemos AX a 0
+	MOV [contador],AX  ; volvemos a poner los contadores de cadena a 0 para resetearlos
+	MOV [contadorParaCadena],AX ; volvemos a poner los contadores de cadena a 0 para resetearlos
+;fin suma y guarda en el next cociente e inicia proceso de imprimir numero
 
 
-; ITER 2
-XOR AX,AX                   ; ponemos AX a 0
-MOV AX,DATOS                ; queremos situarnos en el segmento de datos ( donde están las variables/espacios de memoria)
-MOV DS,AX  
+; intercambio de numeros
+	XOR AX,AX                   ; ponemos AX a 0
+	MOV AX,DATOS                ; queremos situarnos en el segmento de datos ( donde están las variables/espacios de memoria)
+	MOV DS,AX
+	XOR AX,AX	
+	MOV AX,[num_b]    ; ponemos en AX el valor de B
+	MOV[num_a],AX     ; a=b ponemos el valor de BX
+	XOR AX,AX
+	MOV AX,[num_c]    ; metemos en AX valor de C
+	MOV [num_b],AX;   ; b = c
 
-MOV AX,9
-MOV BX,9
-ADD AX,BX
-MOV [nextCociente],AX       ; ponemos en AX el numero que queremos dividir para empezar las iteraciones de division.	
-CALL GET_NUMBER
-XOR AX,AX
-MOV [contador],AX
-MOV [contadorParaCadena],AX
-; END  ITER 2
+	;MOV [nextCociente],AX       ; ponemos en AX el numero que queremos dividir para empezar las iteraciones de division.
+; fin intercambio de numeros
 
-; ITER 3
-XOR AX,AX                   ; ponemos AX a 0
-MOV AX,DATOS                ; queremos situarnos en el segmento de datos ( donde están las variables/espacios de memoria)
-MOV DS,AX  
+; incrementamos contadores de vueltas
+	XOR AX,AX                   ; ponemos AX a 0
+	MOV AX,DATOS                ; queremos situarnos en el segmento de datos ( donde están las variables/espacios de memoria)
+	MOV DS,AX  
+	
+	XOR CX,CX
+	MOV CX,[contador_fibos]
+	INC CX
+	MOV [contador_fibos],CX
+	MOV BX,[contador_fibos]
+	MOV AX,[total_fibos]
+	CMP AX,BX
+	JNE fibonacci
+; fin incrementamos contadores de vueltas
 
-MOV AX,100
-MOV BX,100
-ADD AX,BX
-MOV [nextCociente],AX       ; ponemos en AX el numero que queremos dividir para empezar las iteraciones de division.	
-CALL GET_NUMBER
-XOR AX,AX
-MOV [contador],AX
-MOV [contadorParaCadena],AX
-; END  ITER 3
+;****************************** END ITER **********************
 
-
-
-
-
-
-
-
+;************************************************
+;*               FIN programa                   *
+;************************************************
 
 CALL FIN ;cerramos programa
 
@@ -183,3 +193,7 @@ FIN:                            ; fin programa
 
 	MOV AH,4Ch                  ; Servicio DOS para finalizar un programa 
 	INT 21h						; lanzamos la int 21h para ejecutarlo.
+	
+
+	
+	
