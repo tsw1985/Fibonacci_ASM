@@ -15,7 +15,7 @@
 
 segment DATOS
 	adios              DB 'Adios y gracias $'
-	cadena             RESB 100   ; espacio que tendrá los digitos del numero  
+	cadena             RESB 20   ; espacio que tendrá los digitos del numero  
 	contador           DW 0      ; guardaremos cuantas iteraciones (divisiones) se hicieron
 	contador_loop      DW 0
 	resto              DW 0      ; guardaremos el resto de cada division aqui
@@ -41,8 +41,10 @@ MOV AX,3
 MOV BX,3
 ADD AX,BX
 MOV [nextCociente],AX       ; ponemos en AX el numero que queremos dividir para empezar las iteraciones de division.	
-
 CALL GET_NUMBER
+XOR AX,AX
+MOV [contador],AX
+MOV [contadorParaCadena],AX
 ; END ITER 1
 
 
@@ -56,6 +58,9 @@ MOV BX,9
 ADD AX,BX
 MOV [nextCociente],AX       ; ponemos en AX el numero que queremos dividir para empezar las iteraciones de division.	
 CALL GET_NUMBER
+XOR AX,AX
+MOV [contador],AX
+MOV [contadorParaCadena],AX
 ; END  ITER 2
 
 ; ITER 3
@@ -68,7 +73,18 @@ MOV BX,100
 ADD AX,BX
 MOV [nextCociente],AX       ; ponemos en AX el numero que queremos dividir para empezar las iteraciones de division.	
 CALL GET_NUMBER
+XOR AX,AX
+MOV [contador],AX
+MOV [contadorParaCadena],AX
 ; END  ITER 3
+
+
+
+
+
+
+
+
 
 CALL FIN ;cerramos programa
 
@@ -141,8 +157,6 @@ SACA_RESTO: 					; GUARDAR DIGITO ASCII EN variable CADENA
 	MOV AX,[contador]
 	CMP AX,BX
 	JNE SACA_RESTO
-;LOOP SACA_RESTO
-
 	
 	INC BX                      ; le sumo 1 más para añadir el caracter $ que indica fin de cadena 
 	MOV AL,'$'                  ; añadimos el $ al final de la CADENA ,uso AL para guardar el caracter $
@@ -161,12 +175,6 @@ SACA_RESTO: 					; GUARDAR DIGITO ASCII EN variable CADENA
 	RET						    ; cuando terminemos, pues retornamos
 	
 FIN:                            ; fin programa
-
-	MOV AX,DATOS 
-	MOV DS,AX       		    ; METEMOS EN DS EL SEGMENTO DE LA VARAIBLE cadena
-	LEA DX,[cadena]             ; METEMOS EN DX EL OFFSET DE cadena
-	MOV AH,09h                  ; INVOCAMOS AL SERVICIO DE IMPRIMIR CADENA EN PANTALLA
-	INT 21h                     ; EJECUTAMOS RUTINA DE IMPRIMIR
 	
 	LEA DX,[adios]             ; METEMOS EN DX EL OFFSET DE cadena
 	MOV AH,09h                  ; INVOCAMOS AL SERVICIO DE IMPRIMIR CADENA EN PANTALLA
