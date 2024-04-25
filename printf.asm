@@ -28,7 +28,7 @@ MOV AX,DATA_SEGMENT                	; queremos situarnos en el segmento de DATA_
 MOV DS,AX  							; ponemos DS apuntando a nuestro segmento de DATA_SEGMENT
 XOR AX,AX                   		; ponemos AX a 0
 
-MOV AX,3585                         ; ponemos numero a ver
+MOV AX,1111                         ; ponemos numero a ver
 MOV [next_quotient],AX       		; ponemos en next_quotient el resultado de la suma, que la rutina PRINT_NUMBER la necesita para mostrarlo.
 CALL PRINT_NUMBER					; IMPRIMIMOS NUMERO CON LA RUTINA DE IMPRESION. La rutina imprime el valorq que esté en la variable next_quotient
 
@@ -100,6 +100,16 @@ PRINT_NUMBER:
 		INC BX                      		; Como la funcion 9H necesita un $ al final de la cadena a mostrar pues le sumo 1 a BX que contiene el valor del total de digitos
 		MOV AL,'$'                  		; y en esa posicion añadimos el $ al final
 		MOV [string_number + BX],AL 	    ; GUARDAMOS EL VALOR $ en el final de la string_number ( lo que veremos en pantalla )
+		
+		
+											; una vez se imprimió el número, los contadores están con sus ultimos valores
+											; por lo tanto hay que situar sus punteros para volver a situarnos en su primera posicion
+											; para machacar su antiguo contenido, poniendolos a 0.
+		XOR AX,AX          					; ponemos AX a 0
+		MOV [division_counter],AX  			; ponemos el contador de divisiones 0
+		MOV [pointer_string_number],AX 		; ponemos el contador para string_number a 0
+		
+		
 											
 RET						    				; cuando terminemos, pues retornamos
 	

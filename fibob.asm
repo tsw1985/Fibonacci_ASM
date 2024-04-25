@@ -36,7 +36,7 @@ segment DATA_SEGMENT
 	num_c 			      DW   0     				   ; acumulador
 	division_counter      DW   0      				   ; guardaremos cuantas iteraciones (divisiones) se hicieron
 	counter_iter_fibos    DW   0      				   ; counter para controlar cuantas vueltas llevamos
-	total_iters           DW   25      				   ; total de vueltas fibonaccis que queremos hacers
+	total_iters           DW   2      				   ; total de vueltas fibonaccis que queremos hacers
 	pointer_string_number DW   0      				   ; lo usaremos para desplazarnos byte a byte en  
 	next_quotient         DW   0      				   ; NUMERO A VISUALIZAR EN PANTALLA
 ; END DATA	
@@ -76,14 +76,6 @@ FIBONACCI:								; Etiqueta de fibonacci, para cada iteración. Es el inicio de
 
 	CALL PRINT_NUMBER					; IMPRIMIMOS NUMERO CON LA RUTINA DE IMPRESION. La rutina imprime el valorq que esté en la variable next_quotient
 									
-										; una vez se imprimió el número, los contadores están con sus ultimos valores
-										; por lo tanto hay que situar sus punteros para volver a situarnos en su primera posicion
-										; para machacar su antiguo contenido, poniendolos a 0.
-	XOR AX,AX          					; ponemos AX a 0
-	MOV [division_counter],AX  			; ponemos el contador de divisiones 0
-	MOV [pointer_string_number],AX 		; ponemos el contador para string_number a 0
-
-
 	; intercambio de numeros
 	XOR AX,AX                   		; ponemos AX a 0
 	MOV AX,DATA_SEGMENT                	; queremos situarnos en el segmento de DATA_SEGMENT ( donde están las variables/espacios de memoria)
@@ -175,7 +167,15 @@ PRINT_NUMBER:
 		LEA DX,[string_number]              ; METEMOS EN DX EL OFFSET DE string_number
 		MOV AH,09h                  		; INVOCAMOS AL SERVICIO DE IMPRIMIR string_number EN PANTALLA
 		INT 21h                     		; EJECUTAMOS RUTINA DE IMPRIMIR
+		
+		XOR AX,AX          					; ponemos AX a 0
+		MOV [division_counter],AX  			; ponemos el contador de divisiones 0
+		MOV [pointer_string_number],AX 		; ponemos el contador para string_number a 0
+		
 RET						    				; cuando terminemos, pues retornamos
+
+
+
 	
 FIN:                        				; fin programa
 	
