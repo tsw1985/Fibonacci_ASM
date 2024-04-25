@@ -2,7 +2,11 @@
 ; 1- nasm fichero.asm -f obj
 ; 2- alink fichero.obj -oEXE
 
-;***********************************************************************************
+;********************************************************************************************
+; 25 Abril 2024
+; -------------
+; Ejemplo en Java
+; ---------------
 ; int a = 1;
 ; int b = 1;
 ; int c = 0;
@@ -13,7 +17,16 @@
 	; a = b;
 	; b = c;
 ; }
-;***********************************************************************************
+
+; ESTE PROGRAMA ES LA SUCESION DE FIBONACCI EN ASM. ES UNA PRÁCTICA MUY INTERESANTE PORQUE
+; TE DAS CUENTA DE COMO FUNCIONA UN ORDENADOR POR DENTRO Y TIENES QUE HACER TODO PARA PODER
+; VER LOS DATOS, DESDE LA RUTINA DE IMPRESION ( AUNQUE USAS LA INT 21 ) HASTA MOVER LOS
+; DATOS EN MEMORIA. SEGURAMENTE NO ES EL MEJOR CÓDIGO DEL MUNDO RESPECTO A ESTE EJERCICIO
+; PERO LO HE HECHO DESDE 0 , DANDOME GOLPES POR LO TANTO ESTOY MUY ORGULLOSO.
+; A SEGUIR APRENDIENDO ENSAMBLADOR.
+
+
+;********************************************************************************************
 
 segment DATOS
 	adios              DB 'Adios y gracias $'
