@@ -1,4 +1,4 @@
-; COMSTACK_SEGMENTR :
+; COMPILAR
 ; 1- nasm fichero.asm -f obj
 ; 2- alink fichero.obj -oEXE
 
@@ -36,7 +36,7 @@ segment DATA_SEGMENT
 	num_c 			      DW   0     				   ; acumulador
 	division_counter      DW   0      				   ; guardaremos cuantas iteraciones (divisiones) se hicieron
 	counter_iter_fibos    DW   0      				   ; counter para controlar cuantas vueltas llevamos
-	total_iters           DW   5      				   ; total de vueltas fibonaccis que queremos hacers
+	total_iters           DW   25      				   ; total de vueltas fibonaccis que queremos hacers
 	pointer_string_number DW   0      				   ; lo usaremos para desplazarnos byte a byte en  
 	next_quotient         DW   0      				   ; NUMERO A VISUALIZAR EN PANTALLA
 ; END DATA	
