@@ -36,7 +36,7 @@ segment DATA_SEGMENT
 	num_c 			      DW   0     				   ; acumulador
 	division_counter      DW   0      				   ; guardaremos cuantas iteraciones (divisiones) se hicieron
 	counter_iter_fibos    DW   0      				   ; counter para controlar cuantas vueltas llevamos
-	total_iters           DW   2      				   ; total de vueltas fibonaccis que queremos hacers
+	total_iters           DW   6      				   ; total de vueltas fibonaccis que queremos hacers
 	pointer_string_number DW   0      				   ; lo usaremos para desplazarnos byte a byte en  
 	next_quotient         DW   0      				   ; NUMERO A VISUALIZAR EN PANTALLA
 ; END DATA	
@@ -75,6 +75,12 @@ FIBONACCI:								; Etiqueta de fibonacci, para cada iteración. Es el inicio de
 	MOV [num_c],AX    					; c = a + b . ponemos en num_c el total de la suma que está guardado en AX
 
 	CALL PRINT_NUMBER					; IMPRIMIMOS NUMERO CON LA RUTINA DE IMPRESION. La rutina imprime el valorq que esté en la variable next_quotient
+										; ya el numero queda guardado en string_number , solo hay que mostrarlo
+	MOV AX,DATA_SEGMENT 				; Nos situamos en el segmento de DATA_SEGMENT
+	MOV DS,AX       		    		; METEMOS EN DS EL SEGMENTO DE LA VARAIBLE string_number
+	LEA DX,[string_number]              ; METEMOS EN DX EL OFFSET DE string_number
+	MOV AH,09h                  		; INVOCAMOS AL SERVICIO DE IMPRIMIR string_number EN PANTALLA
+	INT 21h                     		; EJECUTAMOS RUTINA DE IMPRIMIR
 									
 	; intercambio de numeros
 	XOR AX,AX                   		; ponemos AX a 0
@@ -162,11 +168,11 @@ PRINT_NUMBER:
 		MOV [string_number + BX],AL 	    ; GUARDAMOS EL VALOR $ en el final de la string_number ( lo que veremos en pantalla )
 											
 											
-		MOV AX,DATA_SEGMENT 				; Nos situamos en el segmento de DATA_SEGMENT
-		MOV DS,AX       		    		; METEMOS EN DS EL SEGMENTO DE LA VARAIBLE string_number
-		LEA DX,[string_number]              ; METEMOS EN DX EL OFFSET DE string_number
-		MOV AH,09h                  		; INVOCAMOS AL SERVICIO DE IMPRIMIR string_number EN PANTALLA
-		INT 21h                     		; EJECUTAMOS RUTINA DE IMPRIMIR
+		; MOV AX,DATA_SEGMENT 				; Nos situamos en el segmento de DATA_SEGMENT
+		; MOV DS,AX       		    		; METEMOS EN DS EL SEGMENTO DE LA VARAIBLE string_number
+		; LEA DX,[string_number]              ; METEMOS EN DX EL OFFSET DE string_number
+		; MOV AH,09h                  		; INVOCAMOS AL SERVICIO DE IMPRIMIR string_number EN PANTALLA
+		; INT 21h                     		; EJECUTAMOS RUTINA DE IMPRIMIR
 		
 		XOR AX,AX          					; ponemos AX a 0
 		MOV [division_counter],AX  			; ponemos el contador de divisiones 0
