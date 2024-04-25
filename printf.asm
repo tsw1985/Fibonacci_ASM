@@ -3,7 +3,7 @@
 ; 2- alink fichero.obj -oEXE
 ; Funcion PRINT :
 ;   - entrada : next_quotient -> Ponemos aqui nuestro numero
-;   - return : string_number queda llena con el numero .
+;   - return  : string_number -> queda llena con el numero .
 
 ; DATA
 segment DATA_SEGMENT
@@ -101,12 +101,6 @@ PRINT_NUMBER:
 		MOV AL,'$'                  		; y en esa posicion añadimos el $ al final
 		MOV [string_number + BX],AL 	    ; GUARDAMOS EL VALOR $ en el final de la string_number ( lo que veremos en pantalla )
 											
-											
-		;MOV AX,DATA_SEGMENT 				; Nos situamos en el segmento de DATA_SEGMENT
-		;MOV DS,AX       		    		; METEMOS EN DS EL SEGMENTO DE LA VARAIBLE string_number
-		;LEA DX,[string_number]              ; METEMOS EN DX EL OFFSET DE string_number
-		;MOV AH,09h                  		; INVOCAMOS AL SERVICIO DE IMPRIMIR string_number EN PANTALLA
-		;INT 21h                     		; EJECUTAMOS RUTINA DE IMPRIMIR
 RET						    				; cuando terminemos, pues retornamos
 	
 FIN:                        				; fin programa
