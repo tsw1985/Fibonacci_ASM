@@ -3,14 +3,16 @@
 ; 2- alink fichero.obj -oEXE
 
 ;***********************************************************************************
-; ESTA RUTINA IMPRIME UN NUMERO EN PANTALLA . PARA ELLOS NECESITAMOS IR DIVIDIENDO 
-; EL NUMERO ENTRE 10 , OBTENER EL RESTO QUE SERÁ EL DÍGITO E IR GUARDANDOLO EN LA 
-; PILA PARA LUEGO OBTENERLO.
-;
-; EN ESTE EJEMPLO EL NUMERO EN CUESTION ES nextCociente , QUE PODRÍA SER ASIGNADO
-; DESDE OTRA RUTINA Y LUEGO LLAMAR A ESTO PARA IMPRIMIRLO.
-; 
-; DE TODAS FORMAS, ESTO PUEDE TENER FALLOS, ESTOY ESTUDIANDO ASM.
+; int a = 1;
+; int b = 1;
+; int c = 0;
+; System.out.println(a);
+; for(int i = 0 ; i < 20 ; i++) {
+	; c = a + b;
+	; System.out.println(c);
+	; a = b;
+	; b = c;
+; }
 ;***********************************************************************************
 
 segment DATOS
@@ -22,7 +24,7 @@ segment DATOS
 	contador           DW 0      ; guardaremos cuantas iteraciones (divisiones) se hicieron
 
 	contador_fibos     DW 0      ; contador para controlar cuantas vueltas llevamos
-	total_fibos        DW 5      ; total de vueltas fibonaccis que queremos hacers
+	total_fibos        DW 10      ; total de vueltas fibonaccis que queremos hacers
 	
 	resto              DW 0      ; guardaremos el resto de cada division aqui
 	contadorParaCadena DW 0      ; lo usaremos para desplazarnos byte a byte en  
@@ -35,23 +37,31 @@ segment PILA stack
 
 segment CODIGO
 
+
+
+
 ..start:
 
-
-
-;************************* ITER **************************
-XOR AX,AX                   ; ponemos AX a 0
-MOV AX,DATOS                ; queremos situarnos en el segmento de datos ( donde están las variables/espacios de memoria)
-MOV DS,AX  
-
-MOV AX,1
-MOV [num_a],AX    ; ponemos numero a
-XOR BX,BX
-MOV BX,1
-MOV [num_b],BX    ; ponemos numero b
+	XOR AX,AX                   ; ponemos AX a 0
+	MOV AX,DATOS                ; queremos situarnos en el segmento de datos ( donde están las variables/espacios de memoria)
+	MOV DS,AX  
+	XOR AX,AX                   ; ponemos AX a 0
+	MOV AX,[num_a]    ; ponemos numero a
+	XOR BX,BX
+	MOV BX,[num_b]    ; ponemos numero b
 
 
 fibonacci:
+;************************* ITER **************************
+	XOR AX,AX                   ; ponemos AX a 0
+	MOV AX,DATOS                ; queremos situarnos en el segmento de datos ( donde están las variables/espacios de memoria)
+	MOV DS,AX  
+
+	XOR AX,AX                   ; ponemos AX a 0
+	MOV AX,[num_a]    ; ponemos numero a
+	XOR BX,BX
+	MOV BX,[num_b]    ; ponemos numero b
+
 
 ;suma y guarda en el next cociente e inicia proceso de imprimir numero
 	ADD AX,BX ; a + b 
@@ -67,16 +77,6 @@ fibonacci:
 ; intercambio de numeros
 
 
-	; int a = 1;
-	; int b = 1;
-	; int c = 0;
-	; System.out.println(a);
-	; for(int i = 0 ; i < 20 ; i++) {
-		; c = a + b;
-		; System.out.println(c);
-		; a = b;
-		; b = c;
-	; }
 
 	XOR AX,AX                   ; ponemos AX a 0
 	MOV AX,DATOS                ; queremos situarnos en el segmento de datos ( donde están las variables/espacios de memoria)
