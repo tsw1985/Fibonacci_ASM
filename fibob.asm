@@ -166,14 +166,6 @@ PRINT_NUMBER:
 		INC BX                      		; Como la funcion 9H necesita un $ al final de la cadena a mostrar pues le sumo 1 a BX que contiene el valor del total de digitos
 		MOV AL,'$'                  		; y en esa posicion añadimos el $ al final
 		MOV [string_number + BX],AL 	    ; GUARDAMOS EL VALOR $ en el final de la string_number ( lo que veremos en pantalla )
-											
-											
-		; MOV AX,DATA_SEGMENT 				; Nos situamos en el segmento de DATA_SEGMENT
-		; MOV DS,AX       		    		; METEMOS EN DS EL SEGMENTO DE LA VARAIBLE string_number
-		; LEA DX,[string_number]              ; METEMOS EN DX EL OFFSET DE string_number
-		; MOV AH,09h                  		; INVOCAMOS AL SERVICIO DE IMPRIMIR string_number EN PANTALLA
-		; INT 21h                     		; EJECUTAMOS RUTINA DE IMPRIMIR
-		
 		XOR AX,AX          					; ponemos AX a 0
 		MOV [division_counter],AX  			; ponemos el contador de divisiones 0
 		MOV [pointer_string_number],AX 		; ponemos el contador para string_number a 0
